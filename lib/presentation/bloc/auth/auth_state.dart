@@ -15,15 +15,10 @@ class AuthAuthenticated extends AuthState {
   final User user;
   final String token;
 
-  const AuthAuthenticated({
-    required this.user,
-    required this.token,
-  });
+  const AuthAuthenticated({required this.user, required this.token});
 
   @override
   List<Object> get props => [user, token];
-
-  get auth => null;
 }
 
 class AuthUnauthenticated extends AuthState {}

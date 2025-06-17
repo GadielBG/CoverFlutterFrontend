@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
       body: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           if (state is AuthAuthenticated) {
-            final user = state.auth.user;
+            final user = state.user;
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -108,10 +108,7 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 40),
                     const Text(
                       'Tu experiencia comienza aquí',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppTheme.hintColor,
-                      ),
+                      style: TextStyle(fontSize: 16, color: AppTheme.hintColor),
                     ),
                   ],
                 ),
@@ -132,11 +129,7 @@ class HomePage extends StatelessWidget {
   Widget _infoRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(
-          icon,
-          color: AppTheme.primaryPink,
-          size: 20,
-        ),
+        Icon(icon, color: AppTheme.primaryPink, size: 20),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -144,10 +137,7 @@ class HomePage extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppTheme.hintColor,
-                ),
+                style: const TextStyle(fontSize: 12, color: AppTheme.hintColor),
               ),
               Text(
                 value,
