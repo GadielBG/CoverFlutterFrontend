@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../domain/entities/user.dart';
 import '../models/user_model.dart';
@@ -28,14 +29,16 @@ abstract class AuthRepository {
 
 class AuthRepositoryImpl implements AuthRepository {
   final Dio dio;
+  final SharedPreferences sharedPreferences;
   final String baseUrl;
 
-  // TODO: Cambiar por SharedPreferences o secure storage
-  String? _token;
-  User? _currentUser;
+  // Keys para SharedPreferences
+  static const String _tokenKey = 'auth_token';
+  static const String _userKey = 'user_data';
 
   AuthRepositoryImpl({
     required this.dio,
+    required this.sharedPreferences,
     // 🔥 CAMBIAR ESTA URL SEGÚN TU CASO:
 
     // Para EMULADOR Android:
@@ -56,6 +59,16 @@ class AuthRepositoryImpl implements AuthRepository {
         logPrint: (obj) => print('🌐 DIO: $obj'),
       ),
     );
+    
+    // Configurar el token si existe
+    _configureAuthHeader();
+  }
+  
+  Future<void> _configureAuthHeader() async {
+    final token = await getToken();
+    if (token != null) {
+      dio.options.headers['Authorization'] = 'Bearer $token';
+    }
   }
 
   @override
@@ -120,7 +133,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       print('🚀 Intentando registrar usuario...');
-      print('📍 URL: $baseUrl/auth/register');
+      print('📍 URL: $baseUrl/registerCliente');
       print('👤 Usuario: $nombreUsuario');
       print('📧 Email: $correo');
 
@@ -188,29 +201,41 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<String?> getToken() async {
-    return _token;
+    return sharedPreferences.getString(_tokenKey);
   }
 
   @override
   Future<User?> getCurrentUser() async {
-    return _currentUser;
+    final userJson = sharedPreferences.getString(_userKey);
+    if (userJson != null) {
+      try {
+        final userMap = json.decode(userJson) as Map<String, dynamic>;
+        return UserModel.fromJson(userMap);
+      } catch (e) {
+        print('❌ Error al decodificar usuario: $e');
+        return null;
+      }
+    }
+    return null;
   }
 
   @override
   Future<void> saveToken(String token) async {
-    _token = token;
+    await sharedPreferences.setString(_tokenKey, token);
     dio.options.headers['Authorization'] = 'Bearer $token';
   }
 
   @override
   Future<void> saveUser(User user) async {
-    _currentUser = user;
+    final userModel = user as UserModel;
+    final userJson = json.encode(userModel.toJson());
+    await sharedPreferences.setString(_userKey, userJson);
   }
 
   @override
   Future<void> clearAuthData() async {
-    _token = null;
-    _currentUser = null;
+    await sharedPreferences.remove(_tokenKey);
+    await sharedPreferences.remove(_userKey);
     dio.options.headers.remove('Authorization');
   }
 }
