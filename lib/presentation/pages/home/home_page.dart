@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../../app/theme/app_theme.dart';
+import '../profile/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -74,7 +75,12 @@ class _HomePageState extends State<HomePage> {
                           if (state is AuthAuthenticated) {
                             return GestureDetector(
                               onTap: () {
-                                // TODO: Navegar al perfil
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (context) => const ProfilePage(),
+                                    ),
+                                  );
                               },
                               child: Container(
                                 width: 40,
@@ -228,6 +234,14 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           _selectedIndex = index;
         });
+        if (index == 4) { //4 es el indice del icono de perfil en el navbar
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => const ProfilePage(),
+              ),
+            );
+        }
         // TODO: Navegar a la página correspondiente
       },
       child: Container(
