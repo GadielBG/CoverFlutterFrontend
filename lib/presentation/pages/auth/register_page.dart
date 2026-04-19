@@ -127,7 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           const SizedBox(height: 20),
                           
                           const Text(
-                            'Sign Up',
+                            'Regístrate Aquí',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 32,
@@ -161,7 +161,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   controller: _nombreUsuarioController,
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
-                                    hintText: 'Username',
+                                    hintText: 'Nombre de usuario',
                                     prefixIcon: Icon(Icons.person_outline, color: AppTheme.hintColor),
                                   ),
                                   validator: (value) {
@@ -181,7 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   controller: _nombreCompletoController,
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
-                                    hintText: 'Full Name',
+                                    hintText: 'Nombre completo',
                                     prefixIcon: Icon(Icons.badge_outlined, color: AppTheme.hintColor),
                                   ),
                                   validator: (value) {
@@ -199,7 +199,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   keyboardType: TextInputType.emailAddress,
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
-                                    hintText: 'Email Address',
+                                    hintText: 'Correo electrónico',
                                     prefixIcon: Icon(Icons.email_outlined, color: AppTheme.hintColor),
                                   ),
                                   validator: (value) {
@@ -220,7 +220,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   keyboardType: TextInputType.phone,
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
-                                    hintText: 'Phone (optional)',
+                                    hintText: 'Teléfono (opcional)',
                                     prefixIcon: Icon(Icons.phone_outlined, color: AppTheme.hintColor),
                                   ),
                                 ),
@@ -232,7 +232,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   obscureText: _obscurePassword,
                                   style: const TextStyle(color: Colors.white),
                                   decoration: InputDecoration(
-                                    hintText: 'Password',
+                                    hintText: 'Contraseña',
                                     prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.hintColor),
                                     suffixIcon: IconButton(
                                       icon: Icon(
@@ -266,7 +266,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   obscureText: _obscureConfirmPassword,
                                   style: const TextStyle(color: Colors.white),
                                   decoration: InputDecoration(
-                                    hintText: 'Confirm Password',
+                                    hintText: 'Confirmar contraseña',
                                     prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.hintColor),
                                     suffixIcon: IconButton(
                                       icon: Icon(

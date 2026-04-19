@@ -224,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 ),
                                               )
                                             : const Text(
-                                                'Sign In',
+                                                'Iniciar sesión',
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold,
