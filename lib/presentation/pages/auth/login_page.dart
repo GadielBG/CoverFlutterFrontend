@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                                   keyboardType: TextInputType.emailAddress,
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
-                                    hintText: 'Email Address',
+                                    hintText: 'Correo Electrónico',
                                     prefixIcon: Icon(
                                       Icons.email_outlined,
                                       color: AppTheme.hintColor,
@@ -159,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                                   obscureText: _obscurePassword,
                                   style: const TextStyle(color: Colors.white),
                                   decoration: InputDecoration(
-                                    hintText: 'Password',
+                                    hintText: 'Contraseña',
                                     prefixIcon: const Icon(
                                       Icons.lock_outline,
                                       color: AppTheme.hintColor,
@@ -270,7 +270,8 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text(
-                                'Don\'t have an account? ',
+                                //'Don\'t have an account? ',
+                                '¿N\o tienes una cuenta? ',
                                 style: TextStyle(
                                   color: AppTheme.hintColor,
                                   fontSize: 14,
@@ -293,7 +294,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: ShaderMask(
                                   shaderCallback: (bounds) => AppTheme.buttonGradient.createShader(bounds),
                                   child: const Text(
-                                    'Sign Up',
+                                    'Regístrate aquí',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
