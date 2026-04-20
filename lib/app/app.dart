@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import '../injection_container.dart' as di;
 import '../presentation/bloc/auth/auth_bloc.dart';
 import '../presentation/pages/auth/login_page.dart';
@@ -20,6 +21,16 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'Cover App',
         debugShowCheckedModeBanner: false,
+
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('es', 'ES'),
+        ],
+
         theme: ThemeData(
           primarySwatch: Colors.purple,
           primaryColor: const Color(0xFF6B46C1),
