@@ -45,7 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
     //this.baseUrl = 'http://10.0.2.2:3030/persona',
 
     // Para DISPOSITIVO FÍSICO (cambiar por tu IP):
-    this.baseUrl = 'http://192.168.10.22:3030/persona',
+    this.baseUrl = 'http://localhost:3030/persona',
 
     // Para iOS Simulator:
     // this.baseUrl = 'http://localhost:3000/api',
