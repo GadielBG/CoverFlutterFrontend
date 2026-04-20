@@ -20,6 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _telefonoController = TextEditingController();
   final _carnetController = TextEditingController();
   final _fechaNacimientoController = TextEditingController();
+  final _complementoController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   DateTime? _fechaSeleccionada;
@@ -34,6 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _telefonoController.dispose();
     _carnetController.dispose();
     _fechaNacimientoController.dispose();
+    _complementoController.dispose();
     super.dispose();
   }
 
@@ -48,14 +50,16 @@ class _RegisterPageState extends State<RegisterPage> {
           telefono: _telefonoController.text.trim().isEmpty
               ? null
               : _telefonoController.text.trim(),
-          carnet: _carnetController.text.trim().isEmpty
-              ? null
-              : _carnetController.text.trim(),
           fechaNacimiento: _fechaSeleccionada != null
               ? '${_fechaSeleccionada!.year}-'
                 '${_fechaSeleccionada!.month.toString().padLeft(2, '0')}-'
                 '${_fechaSeleccionada!.day.toString().padLeft(2, '0')}'
               : null,
+          carnet: _carnetController.text.trim().isEmpty
+              ? null
+              : _complementoController.text.trim().isEmpty
+              ? _carnetController.text.trim()
+              : '${_carnetController.text.trim()}-${_complementoController.text.trim().toUpperCase()}',
         ),
       );
     }
@@ -265,6 +269,57 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 const SizedBox(height: 16),
 
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: TextFormField(
+                                        controller: _carnetController,
+                                        keyboardType: TextInputType.number,
+                                        style: const TextStyle(color: Colors.white),
+                                        decoration: const InputDecoration(
+                                          hintText: 'Carnet de identidad',
+                                          prefixIcon: Icon(Icons.badge_outlined, color: AppTheme.hintColor),
+                                        ),
+                                        validator: (valor) {
+                                          if (valor == null || valor.isEmpty) {
+                                            return 'Por favor ingrese su carnet es obligatorio';
+                                          }
+                                          if (!RegExp(r'^\d+$').hasMatch(valor)) {
+                                            return 'Por favor ingrese solo números';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    SizedBox(
+                                      width: 90,
+                                      child: TextFormField(
+                                        controller: _complementoController,
+                                        style: const TextStyle(color: Colors.white),
+                                        textCapitalization: TextCapitalization.characters,
+                                        maxLength: 2,
+                                        decoration: const InputDecoration(
+                                          hintText: 'Comp. (Opcional)',
+                                          counterText: '',
+                                          prefixIcon: Icon(Icons.add_circle_outline, color: AppTheme.hintColor),
+                                        ),
+                                        validator: (valor) {
+                                          if (valor != null && valor.isNotEmpty) {
+                                            if (!RegExp(r'^[A-Za-z0-9]{2}$').hasMatch(valor)) {
+                                              return 'Ej: 1A';
+                                            }
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+
                                 TextFormField(
                                   controller: _fechaNacimientoController,
                                   readOnly: true,
@@ -278,7 +333,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   onTap: () => _seleccionarFecha(),
                                   validator: (valor) {
                                     if (valor == null || valor.isEmpty) {
-                                      return 'Por favor seleccione su fecha de nacimiento';
+                                      return 'Por favor ingrese su fecha de nacimiento';
                                     }
                                     return null;
                                   },
@@ -416,7 +471,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                     ),
                                               )
                                             : const Text(
-                                                'Registrar',
+                                                'Registrarse',
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold,
