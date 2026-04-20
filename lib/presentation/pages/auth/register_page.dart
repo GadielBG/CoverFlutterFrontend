@@ -19,8 +19,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final _nombreCompletoController = TextEditingController();
   final _telefonoController = TextEditingController();
   final _carnetController = TextEditingController();
+  final _fechaNacimientoController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  DateTime? _fechaSeleccionada;
 
   @override
   void dispose() {
@@ -31,6 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _nombreCompletoController.dispose();
     _telefonoController.dispose();
     _carnetController.dispose();
+    _fechaNacimientoController.dispose();
     super.dispose();
   }
 
@@ -42,14 +45,49 @@ class _RegisterPageState extends State<RegisterPage> {
           correo: _correoController.text.trim(),
           contrasena: _contrasenaController.text,
           nombreCompleto: _nombreCompletoController.text.trim(),
-          telefono: _telefonoController.text.trim().isEmpty 
-              ? null 
+          telefono: _telefonoController.text.trim().isEmpty
+              ? null
               : _telefonoController.text.trim(),
-          carnet: _carnetController.text.trim().isEmpty 
-              ? null 
+          carnet: _carnetController.text.trim().isEmpty
+              ? null
               : _carnetController.text.trim(),
+          fechaNacimiento: _fechaSeleccionada != null
+              ? '${_fechaSeleccionada!.year}-'
+                '${_fechaSeleccionada!.month.toString().padLeft(2, '0')}-'
+                '${_fechaSeleccionada!.day.toString().padLeft(2, '0')}'
+              : null,
         ),
       );
+    }
+  }
+
+  Future<void> _seleccionarFecha() async {
+    final DateTime? fechaElegida = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+      builder: (context, hijo) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: AppTheme.primaryPink,
+              surface: Color(0xFF2A1A3E),
+            ),
+          ),
+          child: hijo!,
+        );
+      },
+    );
+
+    if (fechaElegida != null) {
+      setState(() {
+        _fechaSeleccionada = fechaElegida;
+        _fechaNacimientoController.text =
+            '${fechaElegida.day.toString().padLeft(2, '0')}-'
+            '${fechaElegida.month.toString().padLeft(2, '0')}-'
+            '${fechaElegida.year}';
+      });
     }
   }
 
@@ -93,15 +131,19 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                        ),
                         onPressed: () => Navigator.pop(context),
                       ),
                       const SizedBox(width: 16),
                       // 🔥 LOGO COVER CON GRADIENTE
                       ShaderMask(
-                        shaderCallback: (bounds) => AppTheme.buttonGradient.createShader(
-                          Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                        ),
+                        shaderCallback: (bounds) =>
+                            AppTheme.buttonGradient.createShader(
+                              Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                            ),
                         child: const Text(
                           'COVER',
                           style: TextStyle(
@@ -115,7 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ],
                   ),
                 ),
-                
+
                 // Contenido scrollable
                 Expanded(
                   child: SingleChildScrollView(
@@ -125,7 +167,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          
+
                           const Text(
                             'Regístrate Aquí',
                             textAlign: TextAlign.center,
@@ -162,7 +204,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
                                     hintText: 'Nombre de usuario',
-                                    prefixIcon: Icon(Icons.person_outline, color: AppTheme.hintColor),
+                                    prefixIcon: Icon(
+                                      Icons.person_outline,
+                                      color: AppTheme.hintColor,
+                                    ),
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -182,7 +227,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
                                     hintText: 'Nombre completo',
-                                    prefixIcon: Icon(Icons.badge_outlined, color: AppTheme.hintColor),
+                                    prefixIcon: Icon(
+                                      Icons.badge_outlined,
+                                      color: AppTheme.hintColor,
+                                    ),
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -200,7 +248,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
                                     hintText: 'Correo electrónico',
-                                    prefixIcon: Icon(Icons.email_outlined, color: AppTheme.hintColor),
+                                    prefixIcon: Icon(
+                                      Icons.email_outlined,
+                                      color: AppTheme.hintColor,
+                                    ),
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -214,6 +265,26 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 const SizedBox(height: 16),
 
+                                TextFormField(
+                                  controller: _fechaNacimientoController,
+                                  readOnly: true,
+                                  style: const TextStyle(color: Colors.white),
+                                  decoration: const InputDecoration(
+                                      hintText: 'Fecha de nacimiento',
+                                      prefixIcon: Icon(
+                                          Icons.calendar_today_outlined,
+                                          color: AppTheme.hintColor)
+                                  ),
+                                  onTap: () => _seleccionarFecha(),
+                                  validator: (valor) {
+                                    if (valor == null || valor.isEmpty) {
+                                      return 'Por favor seleccione su fecha de nacimiento';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+
                                 // Teléfono (opcional)
                                 TextFormField(
                                   controller: _telefonoController,
@@ -221,7 +292,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
                                     hintText: 'Teléfono (opcional)',
-                                    prefixIcon: Icon(Icons.phone_outlined, color: AppTheme.hintColor),
+                                    prefixIcon: Icon(
+                                      Icons.phone_outlined,
+                                      color: AppTheme.hintColor,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -233,7 +307,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                   style: const TextStyle(color: Colors.white),
                                   decoration: InputDecoration(
                                     hintText: 'Contraseña',
-                                    prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.hintColor),
+                                    prefixIcon: const Icon(
+                                      Icons.lock_outline,
+                                      color: AppTheme.hintColor,
+                                    ),
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         _obscurePassword
@@ -267,7 +344,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                   style: const TextStyle(color: Colors.white),
                                   decoration: InputDecoration(
                                     hintText: 'Confirmar contraseña',
-                                    prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.hintColor),
+                                    prefixIcon: const Icon(
+                                      Icons.lock_outline,
+                                      color: AppTheme.hintColor,
+                                    ),
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         _obscureConfirmPassword
@@ -277,7 +357,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ),
                                       onPressed: () {
                                         setState(() {
-                                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                                          _obscureConfirmPassword =
+                                              !_obscureConfirmPassword;
                                         });
                                       },
                                     ),
@@ -304,7 +385,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                         borderRadius: BorderRadius.circular(30),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: AppTheme.primaryPink.withOpacity(0.3),
+                                            color: AppTheme.primaryPink
+                                                .withOpacity(0.3),
                                             blurRadius: 15,
                                             spreadRadius: 2,
                                             offset: const Offset(0, 5),
@@ -312,27 +394,34 @@ class _RegisterPageState extends State<RegisterPage> {
                                         ],
                                       ),
                                       child: ElevatedButton(
-                                        onPressed: state is AuthLoading ? null : _register,
+                                        onPressed: state is AuthLoading
+                                            ? null
+                                            : _register,
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.transparent,
                                           shadowColor: Colors.transparent,
-                                          padding: const EdgeInsets.symmetric(vertical: 16),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                          ),
                                         ),
                                         child: state is AuthLoading
                                             ? const SizedBox(
                                                 height: 20,
                                                 width: 20,
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  color: AppTheme.backgroundColor,
-                                                ),
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color: AppTheme
+                                                          .backgroundColor,
+                                                    ),
                                               )
                                             : const Text(
-                                                'Sign Up',
+                                                'Registrar',
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold,
-                                                  color: AppTheme.backgroundColor,
+                                                  color:
+                                                      AppTheme.backgroundColor,
                                                 ),
                                               ),
                                       ),
@@ -342,7 +431,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ],
                             ),
                           ),
-                          
+
                           const SizedBox(height: 30),
 
                           // Link para login
@@ -350,7 +439,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text(
-                                'Already have an account? ',
+                                '¿Ya tienes una cuenta? ',
                                 style: TextStyle(
                                   color: AppTheme.hintColor,
                                   fontSize: 14,
@@ -363,12 +452,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                 style: TextButton.styleFrom(
                                   padding: EdgeInsets.zero,
                                   minimumSize: const Size(50, 30),
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: ShaderMask(
-                                  shaderCallback: (bounds) => AppTheme.buttonGradient.createShader(bounds),
+                                  shaderCallback: (bounds) => AppTheme
+                                      .buttonGradient
+                                      .createShader(bounds),
                                   child: const Text(
-                                    'Log In',
+                                    'Iniciar sesión',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,

@@ -27,6 +27,7 @@ class RegisterEvent extends AuthEvent {
   final String nombreCompleto;
   final String? telefono;
   final String? carnet;
+  final String? fechaNacimiento;
 
   const RegisterEvent({
     required this.nombreUsuario,
@@ -35,6 +36,7 @@ class RegisterEvent extends AuthEvent {
     required this.nombreCompleto,
     this.telefono,
     this.carnet,
+    this.fechaNacimiento
   });
 
   @override
@@ -45,6 +47,7 @@ class RegisterEvent extends AuthEvent {
         nombreCompleto,
         telefono,
         carnet,
+        fechaNacimiento,
       ];
 }
 
