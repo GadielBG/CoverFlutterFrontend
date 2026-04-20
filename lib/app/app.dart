@@ -1,3 +1,4 @@
+import 'package:cover/app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -31,7 +32,7 @@ class App extends StatelessWidget {
           Locale('es', 'ES'),
         ],
 
-        theme: ThemeData(
+        /*theme: ThemeData(
           primarySwatch: Colors.purple,
           primaryColor: const Color(0xFF6B46C1),
           scaffoldBackgroundColor: const Color(0xFF0F0F0F),
@@ -82,7 +83,8 @@ class App extends StatelessWidget {
             bodyMedium: TextStyle(color: Colors.white),
             titleLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-        ),
+        ),*/
+        theme: AppTheme.darkTheme,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is AuthInitial) {
