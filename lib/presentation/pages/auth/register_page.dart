@@ -95,222 +95,200 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  Widget _campoTexto({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icono,
+    TextInputType teclado = TextInputType.text,
+    bool readOnly = false,
+    bool obscure = false,
+    Widget? sufijo,
+    int? maxLength,
+    String? counterText,
+    TextCapitalization capitalization = TextCapitalization.none,
+    VoidCallback? alTocar,
+    String? Function(String?)? validador,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: teclado,
+      readOnly: readOnly,
+      obscureText: obscure,
+      maxLength: maxLength,
+      textCapitalization: capitalization,
+      style: AppTheme.textoCampo,
+      decoration: AppTheme.inputDecoracion(
+        hint: hint,
+        icono: icono,
+        sufijo: sufijo,
+        counterText: counterText,
+      ),
+      onTap: alTocar,
+      validator: validador,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(AppTheme.snackbarError(state.message));
           } else if (state is AuthAuthenticated) {
             Navigator.of(context).popUntil((route) => route.isFirst);
           }
         },
         child: Container(
-          // 🔥 MISMO FONDO CON GRADIENTE
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppTheme.backgroundColor,
-                Color(0xFF2A1A3E),
-                Color(0xFF1A1A2E),
-                AppTheme.backgroundColor,
-              ],
-              stops: [0.0, 0.3, 0.7, 1.0],
-            ),
+            gradient: AppTheme.backgroundGradient,
           ),
           child: SafeArea(
             child: Column(
               children: [
-                // AppBar personalizada
                 Padding(
-                  padding: const EdgeInsets.all(24.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.spacingMd,
+                    vertical: AppTheme.spacingSm + 4,
+                  ),
                   child: Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
+                      Container(
+                        decoration: AppTheme.botonAtrasDecoracion,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios_new,
+                            color: AppTheme.textColor,
+                            size: 18,
+                          ),
+                          onPressed: () => Navigator.pop(context),
                         ),
-                        onPressed: () => Navigator.pop(context),
                       ),
-                      const SizedBox(width: 16),
-                      // 🔥 LOGO COVER CON GRADIENTE
+                      const SizedBox(width: AppTheme.spacingMd),
                       ShaderMask(
                         shaderCallback: (bounds) =>
                             AppTheme.buttonGradient.createShader(
                               Rect.fromLTWH(0, 0, bounds.width, bounds.height),
                             ),
-                        child: const Text(
-                          'COVER',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                            letterSpacing: 6,
-                          ),
-                        ),
+                        child: const Text('COVER', style: AppTheme.estiloLogo),
                       ),
                     ],
                   ),
                 ),
 
-                // Contenido scrollable
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.spacingMd + 4,
+                    ),
                     child: Form(
                       key: _formKey,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 20),
-
+                          const SizedBox(height: AppTheme.spacingMd),
                           const Text(
-                            'Regístrate Aquí',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            'Crear cuenta',
+                            style: AppTheme.tituloPagina,
                           ),
-                          const SizedBox(height: 40),
+                          const SizedBox(height: AppTheme.spacingXs),
 
-                          // Contenedor con fondo semi-transparente
+                          Text(
+                            'Completa tus datos para registrarte',
+                            style: AppTheme.subtituloPagina,
+                          ),
+                          const SizedBox(height: AppTheme.spacingXl - 4),
+
+                          Text(
+                            'Información personal',
+                            style: AppTheme.etiquetaSeccion,
+                          ),
+                          const SizedBox(height: AppTheme.spacingSm + 4),
+
                           Container(
-                            padding: const EdgeInsets.all(32),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(24),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.1),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  blurRadius: 20,
-                                  spreadRadius: 5,
-                                ),
-                              ],
-                            ),
+                            padding: const EdgeInsets.all(AppTheme.spacingMd),
+                            decoration: AppTheme.cardDecoracion,
                             child: Column(
                               children: [
-                                // Nombre de usuario
-                                TextFormField(
-                                  controller: _nombreUsuarioController,
-                                  style: const TextStyle(color: Colors.white),
-                                  decoration: const InputDecoration(
-                                    hintText: 'Nombre de usuario',
-                                    prefixIcon: Icon(
-                                      Icons.person_outline,
-                                      color: AppTheme.hintColor,
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Por favor ingrese un nombre de usuario';
-                                    }
-                                    if (value.length < 3) {
-                                      return 'El nombre de usuario debe tener al menos 3 caracteres';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Nombre completo
-                                TextFormField(
+                                _campoTexto(
                                   controller: _nombreCompletoController,
-                                  style: const TextStyle(color: Colors.white),
-                                  decoration: const InputDecoration(
-                                    hintText: 'Nombre completo',
-                                    prefixIcon: Icon(
-                                      Icons.badge_outlined,
-                                      color: AppTheme.hintColor,
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
+                                  hint: 'Nombre completo',
+                                  icono: Icons.person_outline,
+                                  validador: (value) {
+                                    if (value == null || value.isEmpty)
                                       return 'Por favor ingrese su nombre completo';
-                                    }
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 16),
-
-                                // Correo
-                                TextFormField(
+                                const SizedBox(height: AppTheme.spacingMd),
+                                _campoTexto(
+                                  controller: _nombreUsuarioController,
+                                  hint: 'Nombre de usuario',
+                                  icono: Icons.alternate_email,
+                                  validador: (value) {
+                                    if (value == null || value.isEmpty)
+                                      return 'Por favor ingrese un nombre de usuario';
+                                    if (value.length < 3)
+                                      return 'Mínimo 3 caracteres';
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: AppTheme.spacingMd),
+                                _campoTexto(
                                   controller: _correoController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  style: const TextStyle(color: Colors.white),
-                                  decoration: const InputDecoration(
-                                    hintText: 'Correo electrónico',
-                                    prefixIcon: Icon(
-                                      Icons.email_outlined,
-                                      color: AppTheme.hintColor,
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
+                                  hint: 'Correo electrónico',
+                                  icono: Icons.email_outlined,
+                                  teclado: TextInputType.emailAddress,
+                                  validador: (value) {
+                                    if (value == null || value.isEmpty)
                                       return 'Por favor ingrese su correo';
-                                    }
-                                    if (!value.contains('@')) {
-                                      return 'Por favor ingrese un correo válido';
-                                    }
+                                    if (!value.contains('@'))
+                                      return 'Ingrese un correo válido';
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 16),
-
+                                const SizedBox(height: AppTheme.spacingMd),
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
                                       flex: 3,
-                                      child: TextFormField(
+                                      child: _campoTexto(
                                         controller: _carnetController,
-                                        keyboardType: TextInputType.number,
-                                        style: const TextStyle(color: Colors.white),
-                                        decoration: const InputDecoration(
-                                          hintText: 'Carnet de identidad',
-                                          prefixIcon: Icon(Icons.badge_outlined, color: AppTheme.hintColor),
-                                        ),
-                                        validator: (valor) {
-                                          if (valor == null || valor.isEmpty) {
-                                            return 'Por favor ingrese su carnet es obligatorio';
-                                          }
-                                          if (!RegExp(r'^\d+$').hasMatch(valor)) {
+                                        hint: 'Carnet de identidad',
+                                        icono: Icons.badge_outlined,
+                                        teclado: TextInputType.number,
+                                        validador: (valor) {
+                                          if (valor == null || valor.isEmpty)
+                                            return 'Por favor ingrese su carnet de identidad';
+                                          if (!RegExp(r'^\d+$').hasMatch(valor))
                                             return 'Por favor ingrese solo números';
-                                          }
                                           return null;
                                         },
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(
+                                      width: AppTheme.spacingSm + 2,
+                                    ),
                                     SizedBox(
-                                      width: 90,
-                                      child: TextFormField(
+                                      width: 95,
+                                      child: _campoTexto(
                                         controller: _complementoController,
-                                        style: const TextStyle(color: Colors.white),
-                                        textCapitalization: TextCapitalization.characters,
+                                        hint: 'Comp.',
+                                        icono: Icons.add_circle_outline,
                                         maxLength: 2,
-                                        decoration: const InputDecoration(
-                                          hintText: 'Comp. (Opcional)',
-                                          counterText: '',
-                                          prefixIcon: Icon(Icons.add_circle_outline, color: AppTheme.hintColor),
-                                        ),
-                                        validator: (valor) {
-                                          if (valor != null && valor.isNotEmpty) {
-                                            if (!RegExp(r'^[A-Za-z0-9]{2}$').hasMatch(valor)) {
+                                        counterText: '',
+                                        capitalization:
+                                            TextCapitalization.characters,
+                                        validador: (valor) {
+                                          if (valor != null &&
+                                              valor.isNotEmpty) {
+                                            if (!RegExp(
+                                              r'^[A-Za-z0-9]{2}$',
+                                            ).hasMatch(valor))
                                               return 'Ej: 1A';
-                                            }
                                           }
                                           return null;
                                         },
@@ -318,215 +296,154 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 16),
-
-                                TextFormField(
+                                const SizedBox(height: AppTheme.spacingMd),
+                                _campoTexto(
                                   controller: _fechaNacimientoController,
+                                  hint: 'Fecha de nacimiento',
+                                  icono: Icons.calendar_today_outlined,
                                   readOnly: true,
-                                  style: const TextStyle(color: Colors.white),
-                                  decoration: const InputDecoration(
-                                      hintText: 'Fecha de nacimiento',
-                                      prefixIcon: Icon(
-                                          Icons.calendar_today_outlined,
-                                          color: AppTheme.hintColor)
-                                  ),
-                                  onTap: () => _seleccionarFecha(),
-                                  validator: (valor) {
-                                    if (valor == null || valor.isEmpty) {
-                                      return 'Por favor ingrese su fecha de nacimiento';
-                                    }
+                                  alTocar: _seleccionarFecha,
+                                  validador: (valor) {
+                                    if (valor == null || valor.isEmpty)
+                                      return 'Por favor seleccione su fecha de nacimiento';
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 16),
-
-                                // Teléfono (opcional)
-                                TextFormField(
+                                const SizedBox(height: AppTheme.spacingMd),
+                                _campoTexto(
                                   controller: _telefonoController,
-                                  keyboardType: TextInputType.phone,
-                                  style: const TextStyle(color: Colors.white),
-                                  decoration: const InputDecoration(
-                                    hintText: 'Teléfono (opcional)',
-                                    prefixIcon: Icon(
-                                      Icons.phone_outlined,
-                                      color: AppTheme.hintColor,
-                                    ),
-                                  ),
+                                  hint: 'Teléfono (opcional)',
+                                  icono: Icons.phone_outlined,
+                                  teclado: TextInputType.phone,
                                 ),
-                                const SizedBox(height: 16),
+                              ],
+                            ),
+                          ),
 
-                                // Contraseña
-                                TextFormField(
+                          const SizedBox(height: AppTheme.spacingLg),
+
+                          Text('Seguridad', style: AppTheme.etiquetaSeccion),
+                          const SizedBox(height: AppTheme.spacingSm + 4),
+
+                          Container(
+                            padding: const EdgeInsets.all(AppTheme.spacingMd),
+                            decoration: AppTheme.cardDecoracion,
+                            child: Column(
+                              children: [
+                                _campoTexto(
                                   controller: _contrasenaController,
-                                  obscureText: _obscurePassword,
-                                  style: const TextStyle(color: Colors.white),
-                                  decoration: InputDecoration(
-                                    hintText: 'Contraseña',
-                                    prefixIcon: const Icon(
-                                      Icons.lock_outline,
+                                  hint: 'Contraseña',
+                                  icono: Icons.lock_outline,
+                                  obscure: _obscurePassword,
+                                  sufijo: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
                                       color: AppTheme.hintColor,
+                                      size: 20,
                                     ),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _obscurePassword
-                                            ? Icons.visibility_off_outlined
-                                            : Icons.visibility_outlined,
-                                        color: AppTheme.hintColor,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _obscurePassword = !_obscurePassword;
-                                        });
-                                      },
+                                    onPressed: () => setState(
+                                      () =>
+                                          _obscurePassword = !_obscurePassword,
                                     ),
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
+                                  validador: (value) {
+                                    if (value == null || value.isEmpty)
                                       return 'Por favor ingrese una contraseña';
-                                    }
-                                    if (value.length < 5) {
-                                      return 'La contraseña debe tener al menos 5 caracteres';
-                                    }
+                                    if (value.length < 5)
+                                      return 'Mínimo 5 caracteres';
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 16),
-
-                                // Confirmar contraseña
-                                TextFormField(
+                                const SizedBox(height: AppTheme.spacingMd),
+                                _campoTexto(
                                   controller: _confirmarContrasenaController,
-                                  obscureText: _obscureConfirmPassword,
-                                  style: const TextStyle(color: Colors.white),
-                                  decoration: InputDecoration(
-                                    hintText: 'Confirmar contraseña',
-                                    prefixIcon: const Icon(
-                                      Icons.lock_outline,
+                                  hint: 'Confirmar contraseña',
+                                  icono: Icons.lock_outline,
+                                  obscure: _obscureConfirmPassword,
+                                  sufijo: IconButton(
+                                    icon: Icon(
+                                      _obscureConfirmPassword
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
                                       color: AppTheme.hintColor,
+                                      size: 20,
                                     ),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        _obscureConfirmPassword
-                                            ? Icons.visibility_off_outlined
-                                            : Icons.visibility_outlined,
-                                        color: AppTheme.hintColor,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _obscureConfirmPassword =
-                                              !_obscureConfirmPassword;
-                                        });
-                                      },
+                                    onPressed: () => setState(
+                                      () => _obscureConfirmPassword =
+                                          !_obscureConfirmPassword,
                                     ),
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
+                                  validador: (value) {
+                                    if (value == null || value.isEmpty)
                                       return 'Por favor confirme su contraseña';
-                                    }
-                                    if (value != _contrasenaController.text) {
+                                    if (value != _contrasenaController.text)
                                       return 'Las contraseñas no coinciden';
-                                    }
                                     return null;
-                                  },
-                                ),
-                                const SizedBox(height: 30),
-
-                                // Botón de registro con gradiente
-                                BlocBuilder<AuthBloc, AuthState>(
-                                  builder: (context, state) {
-                                    return Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        gradient: AppTheme.buttonGradient,
-                                        borderRadius: BorderRadius.circular(30),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: AppTheme.primaryPink
-                                                .withOpacity(0.3),
-                                            blurRadius: 15,
-                                            spreadRadius: 2,
-                                            offset: const Offset(0, 5),
-                                          ),
-                                        ],
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: state is AuthLoading
-                                            ? null
-                                            : _register,
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.transparent,
-                                          shadowColor: Colors.transparent,
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 16,
-                                          ),
-                                        ),
-                                        child: state is AuthLoading
-                                            ? const SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                      color: AppTheme
-                                                          .backgroundColor,
-                                                    ),
-                                              )
-                                            : const Text(
-                                                'Registrarse',
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color:
-                                                      AppTheme.backgroundColor,
-                                                ),
-                                              ),
-                                      ),
-                                    );
                                   },
                                 ),
                               ],
                             ),
                           ),
 
-                          const SizedBox(height: 30),
+                          const SizedBox(height: AppTheme.spacingXl),
 
-                          // Link para login
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                '¿Ya tienes una cuenta? ',
-                                style: TextStyle(
-                                  color: AppTheme.hintColor,
-                                  fontSize: 14,
+                          BlocBuilder<AuthBloc, AuthState>(
+                            builder: (context, state) {
+                              return GestureDetector(
+                                onTap: state is AuthLoading ? null : _register,
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 56,
+                                  decoration: state is AuthLoading
+                                      ? AppTheme.botonPrimaryDeshabilitadoDecoracion
+                                      : AppTheme.botonPrimaryDecoracion,
+                                  child: Center(
+                                    child: state is AuthLoading
+                                        ? const SizedBox(
+                                            height: 22,
+                                            width: 22,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.5,
+                                              color: AppTheme.textColor,
+                                            ),
+                                          )
+                                        : const Text(
+                                            'Crear cuenta',
+                                            style: AppTheme.textoBoton,
+                                          ),
+                                  ),
                                 ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  minimumSize: const Size(50, 30),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
+                              );
+                            },
+                          ),
+                          const SizedBox(height: AppTheme.spacingLg),
+
+                          Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '¿Ya tienes una cuenta? ',
+                                  style: AppTheme.textoPequeno,
                                 ),
-                                child: ShaderMask(
-                                  shaderCallback: (bounds) => AppTheme
-                                      .buttonGradient
-                                      .createShader(bounds),
-                                  child: const Text(
-                                    'Iniciar sesión',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
+                                GestureDetector(
+                                  onTap: () => Navigator.pop(context),
+                                  child: ShaderMask(
+                                    shaderCallback: (bounds) => AppTheme
+                                        .buttonGradient
+                                        .createShader(bounds),
+                                    child: const Text(
+                                      'Iniciar sesión',
+                                      style: AppTheme.textoLink,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: AppTheme.spacingXl),
                         ],
                       ),
                     ),
