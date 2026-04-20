@@ -146,8 +146,8 @@ class AuthRepositoryImpl implements AuthRepository {
           'nombre_completo': nombreCompleto,
           'telefono': telefono,
           'carnet': carnet,
-          'rol': 'cliente',
-          'estado': 'activo',
+          /*'rol': 'cliente',
+          'estado': 'activo',*/
         },
       );
 
