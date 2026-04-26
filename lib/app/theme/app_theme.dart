@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // COLORCITOS
+  // --- COLORES ---
   static const Color backgroundColor = Color(0xFF1B1B1B);
   static const Color surfaceColor = Color(0xFF2A2A2A);
   static const Color primaryYellow = Color(0xFFD3FF00);
@@ -12,7 +12,11 @@ class AppTheme {
   static const Color errorColor = Color(0xFFFF4D6D);
   static const Color successColor = Color(0xFF4CAF50);
 
-  // GRADIENTES
+  static const double opacidadBorde = 0.08;
+  static const double opacidadFondoInput = 0.4;
+  static const double opacidadFondoCard = 0.1;
+
+  // --- GRADIENTES ---
   static const LinearGradient buttonGradient = LinearGradient(
     colors: [primaryYellow, primaryPink],
     begin: Alignment.centerLeft,
@@ -37,7 +41,7 @@ class AppTheme {
     colors: [Color(0xFF2A1A3E), Color(0xFF1A1A2E)],
   );
 
-  // ESPACIADOS
+  // --- ESPACIADOS Y RADIOS ---
   static const double spacingXs = 4.0;
   static const double spacingSm = 8.0;
   static const double spacingMd = 16.0;
@@ -45,17 +49,13 @@ class AppTheme {
   static const double spacingXl = 32.0;
   static const double spacingXxl = 48.0;
 
-  // BORDES REDONDEADOS
   static const double radiusSm = 8.0;
   static const double radiusMd = 14.0;
   static const double radiusLg = 20.0;
   static const double radiusXl = 30.0;
   static const double radiusFull = 100.0;
 
-  /* ----------------------------------------------------------------------------------------- */
-  // ESTILOS DE TEXTO
-
-  // Títulos principales
+  // --- ESTILOS DE TEXTO ---
   static const TextStyle tituloPagina = TextStyle(
     fontSize: 30,
     fontWeight: FontWeight.w800,
@@ -63,13 +63,11 @@ class AppTheme {
     letterSpacing: -0.5,
   );
 
-  // Subtitulos bajo del título
   static TextStyle subtituloPagina = TextStyle(
     fontSize: 14,
     color: textColor.withOpacity(0.45),
   );
 
-  // Logo COVER
   static const TextStyle estiloLogo = TextStyle(
     fontSize: 28,
     fontWeight: FontWeight.w900,
@@ -77,7 +75,6 @@ class AppTheme {
     letterSpacing: 6,
   );
 
-  // Etiquetas
   static TextStyle etiquetaSeccion = TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.w700,
@@ -85,47 +82,50 @@ class AppTheme {
     letterSpacing: 1.5,
   );
 
-  // Texto de campos de formulario
-  static const TextStyle textoCampo = TextStyle(
-    color: textColor,
-    fontSize: 15,
-    fontWeight: FontWeight.w400,
-  );
+  static const TextStyle textoCampo = TextStyle(color: textColor, fontSize: 15);
 
-  // Sugerencia de campos
-  static TextStyle textoHint = TextStyle(
-    color: textColor.withOpacity(0.35),
-    fontSize: 14,
-  );
-
-  // Texto de boton principal
   static const TextStyle textoBoton = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w700,
     color: textColor,
-    letterSpacing: 0.3,
   );
 
-  // Texto pequeño
   static TextStyle textoPequeno = TextStyle(
     color: textColor.withOpacity(0.45),
     fontSize: 14,
   );
 
-  // LSink con gradientes
   static const TextStyle textoLink = TextStyle(
     color: textColor,
     fontWeight: FontWeight.w700,
     fontSize: 14,
   );
 
-  // Texto de error
-  static const TextStyle textoError = TextStyle(
-    color: errorColor,
-    fontSize: 11,
+  static const TextStyle textoNombreUsuario = TextStyle(
+    fontSize: 28,
+    color: textColor,
+    fontWeight: FontWeight.w900,
   );
 
-  // DECORACIÓN DE INPUTS
+  static const TextStyle textoSaludo = TextStyle(
+    fontSize: 16,
+    color: textColor,
+    fontWeight: FontWeight.w300,
+  );
+
+  static TextStyle textoSearchHint = TextStyle(
+    color: textColor.withOpacity(0.3),
+    fontSize: 14,
+  );
+
+  static const TextStyle textoUbicacion = TextStyle(
+    color: textColor,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+  );
+
+  // --- DECORACIONES DE COMPONENTES ---
+
   static InputDecoration inputDecoracion({
     required String hint,
     required IconData icono,
@@ -139,47 +139,65 @@ class AppTheme {
       prefixIcon: Icon(icono, color: textColor.withOpacity(0.4), size: 20),
       suffixIcon: sufijo,
       filled: true,
-      //fillColor: textColor.withOpacity(0.05),
-      fillColor: Colors.black.withOpacity(0.4),
+      fillColor: Colors.black.withOpacity(opacidadFondoInput),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(radiusMd),
-        borderSide: BorderSide(color: textColor.withOpacity(0.08)),
+      border: _crearBorde(),
+      enabledBorder: _crearBorde(),
+      focusedBorder: _crearBorde(
+        color: primaryPink.withOpacity(0.7),
+        ancho: 1.5,
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(radiusMd),
-        borderSide: BorderSide(color: textColor.withOpacity(0.08)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(radiusMd),
-        borderSide: BorderSide(color: primaryPink.withOpacity(0.7), width: 1.5),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(radiusMd),
-        borderSide: const BorderSide(color: errorColor, width: 1),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(radiusMd),
-        borderSide: const BorderSide(color: errorColor, width: 1.5),
-      ),
-      errorStyle: textoError,
+      errorBorder: _crearBorde(color: errorColor),
+      focusedErrorBorder: _crearBorde(color: errorColor, ancho: 1.5),
+      errorStyle: const TextStyle(color: errorColor, fontSize: 11),
     );
   }
 
-  // DECORACIÓN DE CARDS
+  static OutlineInputBorder _crearBorde({Color? color, double ancho = 1.0}) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(radiusMd),
+      borderSide: BorderSide(
+        color: color ?? textColor.withOpacity(opacidadBorde),
+        width: ancho,
+      ),
+    );
+  }
+
   static BoxDecoration cardDecoracion = BoxDecoration(
-    color: Colors.black.withOpacity(0.1),
+    color: Colors.black.withOpacity(opacidadFondoCard),
     borderRadius: BorderRadius.circular(radiusLg),
-    border: Border.all(color: textColor.withOpacity(0.08)),
+    border: Border.all(color: textColor.withOpacity(opacidadBorde)),
   );
 
   static BoxDecoration cardDestacadoDecoracion = BoxDecoration(
-    gradient: cardGradient,
+    gradient: const LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF4A148C), Color(0xFF880E4F)],
+    ),
     borderRadius: BorderRadius.circular(radiusLg),
-    border: Border.all(color: textColor.withOpacity(0.1)),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.3),
+        blurRadius: 15,
+        offset: const Offset(0, 8),
+      ),
+    ],
   );
 
-  // DECORACIÓN DE BOTÓN PRIMARIO
+  static BoxDecoration categoriaDecoracion(bool esSeleccionado) {
+    return BoxDecoration(
+      color: esSeleccionado
+          ? Colors.transparent
+          : Colors.black.withOpacity(0.3),
+      borderRadius: BorderRadius.circular(radiusMd),
+      border: Border.all(
+        color: esSeleccionado ? primaryYellow : textColor.withOpacity(0.1),
+        width: 1.5,
+      ),
+    );
+  }
+
   static BoxDecoration botonPrimaryDecoracion = BoxDecoration(
     gradient: buttonGradient,
     borderRadius: BorderRadius.circular(radiusMd),
@@ -187,7 +205,6 @@ class AppTheme {
       BoxShadow(
         color: primaryPink.withOpacity(0.35),
         blurRadius: 20,
-        spreadRadius: 0,
         offset: const Offset(0, 8),
       ),
     ],
@@ -200,69 +217,30 @@ class AppTheme {
     borderRadius: BorderRadius.circular(radiusMd),
   );
 
-  // DECORACIÓN BOTÓN SECUNDARIO
-  static BoxDecoration botonSecundarioDecoracion = BoxDecoration(
-    color: Colors.transparent,
-    borderRadius: BorderRadius.circular(radiusMd),
-    border: Border.all(color: textColor.withOpacity(0.2)),
-  );
-
-  // DECORACIÓN BOTÓN DE ATRÁS
   static BoxDecoration botonAtrasDecoracion = BoxDecoration(
     color: textColor.withOpacity(0.07),
     borderRadius: BorderRadius.circular(radiusSm + 4),
-    border: Border.all(color: textColor.withOpacity(0.08)),
+    border: Border.all(color: textColor.withOpacity(opacidadBorde)),
   );
 
-  // SNACKBAR
-  static SnackBar snackbarError(String mensaje) {
-    return SnackBar(
-      content: Row(
-        children: [
-          const Icon(Icons.error_outline, color: textColor, size: 18),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(mensaje, style: const TextStyle(color: textColor)),
-          ),
-        ],
+  static BoxDecoration botonPrimarioCircular = BoxDecoration(
+    gradient: buttonGradient,
+    shape: BoxShape.circle,
+    boxShadow: [
+      BoxShadow(
+        color: primaryPink.withOpacity(0.35),
+        blurRadius: 20,
+        offset: const Offset(0, 8),
       ),
-      backgroundColor: errorColor,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(radiusMd),
-      ),
-      margin: const EdgeInsets.all(spacingMd),
-    );
-  }
+    ],
+  );
 
-  static SnackBar snackbarExito(String mensaje) {
-    return SnackBar(
-      content: Row(
-        children: [
-          const Icon(Icons.check_circle_outline, color: textColor, size: 18),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(mensaje, style: const TextStyle(color: textColor)),
-          ),
-        ],
-      ),
-      backgroundColor: successColor,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(radiusMd),
-      ),
-      margin: const EdgeInsets.all(spacingMd),
-    );
-  }
-
-  // DECORACION BARRA BUSQUEDA
   static BoxDecoration barraBusquedaDecoracion = BoxDecoration(
-    color: Colors.black.withOpacity(0.4),
+    color: Colors.black.withOpacity(opacidadFondoInput),
     borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-    border: Border.all(color: AppTheme.textColor.withOpacity(0.08)),
+    border: Border.all(color: textColor.withOpacity(opacidadBorde)),
   );
 
-  // DECORACION BOTTOM NAVBAR
   static BoxDecoration navBarDecoracion = BoxDecoration(
     color: const Color(0xFF131313),
     boxShadow: [
@@ -274,26 +252,43 @@ class AppTheme {
     ],
   );
 
-  // DECORACION BOTONES CIRCULARES
   static BoxDecoration botonCircularDecoracion = BoxDecoration(
-    color: AppTheme.textColor.withOpacity(0.07),
-    borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-    border: Border.all(color: AppTheme.textColor.withOpacity(0.08)),
+    color: textColor.withOpacity(0.07),
+    shape: BoxShape.circle,
+    border: Border.all(color: textColor.withOpacity(opacidadBorde)),
   );
 
-  // ESTILOS DE TEXTO HOME
-  static const TextStyle textoUbicacion = TextStyle(
-    color: textColor,
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-  );
+  // --- SNACKBARS ---
+  static SnackBar snackbarError(String mensaje) =>
+      _generarSnackBar(mensaje, errorColor, Icons.error_outline);
 
-  static TextStyle textoSearchHint = TextStyle(
-    color: textColor.withOpacity(0.3),
-    fontSize: 14,
-  );
+  static SnackBar snackbarExito(String mensaje) =>
+      _generarSnackBar(mensaje, successColor, Icons.check_circle_outline);
 
-  // THEME DATA
+  static SnackBar _generarSnackBar(
+    String mensaje,
+    Color fondo,
+    IconData icono,
+  ) {
+    return SnackBar(
+      content: Row(
+        children: [
+          Icon(icono, color: textColor, size: 18),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(mensaje, style: const TextStyle(color: textColor)),
+          ),
+        ],
+      ),
+      backgroundColor: fondo,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radiusMd),
+      ),
+      margin: const EdgeInsets.all(spacingMd),
+    );
+  }
+
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
@@ -310,32 +305,7 @@ class AppTheme {
         backgroundColor: backgroundColor,
         elevation: 0,
         iconTheme: IconThemeData(color: textColor),
-        titleTextStyle: TextStyle(
-          color: textColor,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: backgroundColor,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(radiusMd),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-          textStyle: textoBoton,
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: primaryPink,
-          textStyle: textoLink,
-        ),
-      ),
-      iconTheme: const IconThemeData(color: textColor),
-      dividerTheme: const DividerThemeData(color: hintColor, thickness: 0.5),
     );
   }
 }
