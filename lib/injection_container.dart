@@ -5,6 +5,7 @@ import 'package:cover/domain/repositories/auth_repository.dart';
 import 'package:cover/data/repositories/auth_repository_impl.dart';
 import 'package:cover/core/network/api_client.dart';
 import 'package:cover/presentation/bloc/auth/auth_bloc.dart';
+import 'package:cover/data/repositories/discoteca_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -13,6 +14,9 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(apiClient: sl(), sharedPreferences: sl()),
+  );
+  sl.registerLazySingleton(
+          () => DiscotecaRepository(apiClient: sl())
   );
 
   sl.registerLazySingleton(() => ApiClient(dio: sl()));
