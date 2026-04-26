@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/auth/auth_bloc.dart';
 import '../../../app/theme/app_theme.dart';
+import '../../../data/models/discoteca_model.dart';
+import '../../../data/repositories/discoteca_repository.dart';
+import '../../../injection_container.dart';
 import '../profile/profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,287 +15,423 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+  int _indiceSeleccionado = 2;
+  String _categoriaActual = 'Bares';
+  late final DiscotecaRepository _repositorioDiscoteca;
+  late Future<List<Discoteca>> _futuroDiscotecas;
+
+  @override
+  void initState() {
+    super.initState();
+    _repositorioDiscoteca = sl<DiscotecaRepository>();
+    _futuroDiscotecas = _repositorioDiscoteca.obtenerDiscotecasActivas();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  // Top Row con ubicación, título y avatar
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _construirCabecera(),
+              _construirCategorias(),
+              _construirSeccionPrincipal(),
+              const SizedBox(height: AppTheme.spacingXl),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: _construirNavInferior(),
+    );
+  }
+
+  Widget _construirCabecera() {
+    return Padding(
+      padding: const EdgeInsets.all(AppTheme.spacingMd + 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, estado) {
+                  String nombre = "Invitado";
+                  if (estado is AuthAuthenticated) {
+                    nombre = estado.user.nombreCompleto.split(' ')[0];
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Toggle para modo oscuro (opcional)
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[800],
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: const Icon(
-                          Icons.dark_mode,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                      const Text('Buenas noches,', style: AppTheme.textoSaludo),
+                      Text('$nombre 👋', style: AppTheme.textoNombreUsuario),
+                    ],
+                  );
+                },
+              ),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.notifications_none_rounded,
+                    color: AppTheme.primaryYellow,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 12),
+                  _construirAvatar(),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 54,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: AppTheme.barraBusquedaDecoracion,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.search,
+                        color: AppTheme.textColor.withOpacity(0.3),
                       ),
-                      
-                      // Ubicación
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          const Text(
-                            'La Paz',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ],
-                      ),
-                      
-                      // Avatar del usuario
-                      BlocBuilder<AuthBloc, AuthState>(
-                        builder: (context, state) {
-                          if (state is AuthAuthenticated) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context, 
-                                  MaterialPageRoute(
-                                    builder: (context) => const ProfilePage(),
-                                    ),
-                                  );
-                              },
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  gradient: AppTheme.buttonGradient,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    state.user.nombreCompleto[0].toUpperCase(),
-                                    style: const TextStyle(
-                                      color: AppTheme.backgroundColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                          return const CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.grey,
-                            child: Icon(Icons.person, color: Colors.white),
-                          );
-                        },
+                      const SizedBox(width: 12),
+                      Text(
+                        'Buscar locales...',
+                        style: AppTheme.textoSearchHint,
                       ),
                     ],
                   ),
-                  
-                  const SizedBox(height: 20),
-                  
-                  // Barra de búsqueda
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF2A2A2A),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.1),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.search,
-                                color: Colors.grey[400],
-                                size: 20,
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: TextField(
-                                  style: const TextStyle(color: Colors.white),
-                                  decoration: InputDecoration(
-                                    hintText: 'Search for the EVENT...',
-                                    hintStyle: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 14,
-                                    ),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      // Botón de filtros
-                      Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          gradient: AppTheme.buttonGradient,
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.tune,
-                            color: AppTheme.backgroundColor,
-                          ),
-                          onPressed: () {
-                            // TODO: Mostrar filtros
-                          },
-                        ),
-                      ),
-                    ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              _botonCircularAccion(Icons.tune),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _construirAvatar() {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, estado) {
+        String inicial = "U";
+        if (estado is AuthAuthenticated)
+          inicial = estado.user.nombreCompleto[0].toUpperCase();
+        return GestureDetector(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfilePage()),
+          ),
+          child: Container(
+            width: 45,
+            height: 45,
+            decoration: AppTheme.botonPrimarioCircular,
+            child: Center(
+              child: Text(
+                inicial,
+                style: AppTheme.textoBoton.copyWith(
+                  color: AppTheme.backgroundColor,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _botonCircularAccion(IconData icono) {
+    return Container(
+      width: 54,
+      height: 54,
+      decoration: AppTheme.botonCircularDecoracion,
+      child: Icon(icono, color: AppTheme.textColor, size: 22),
+    );
+  }
+
+  Widget _construirCategorias() {
+    final listaCategorias = [
+      {'nombre': 'Bares', 'icono': Icons.local_bar_rounded},
+      {'nombre': 'Discos', 'icono': Icons.music_note_rounded},
+      {'nombre': 'Pubs', 'icono': Icons.sports_bar_rounded},
+      {'nombre': 'Karaoke', 'icono': Icons.mic_external_on_rounded},
+      {'nombre': 'Lounge', 'icono': Icons.wine_bar_rounded},
+    ];
+
+    return SizedBox(
+      height: 110,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.only(left: AppTheme.spacingMd),
+        itemCount: listaCategorias.length,
+        itemBuilder: (context, i) {
+          final cat = listaCategorias[i];
+          final esSeleccionada = _categoriaActual == cat['nombre'];
+          return GestureDetector(
+            onTap: () =>
+                setState(() => _categoriaActual = cat['nombre'] as String),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: Column(
+                children: [
+                  Container(
+                    width: 65,
+                    height: 65,
+                    decoration: AppTheme.categoriaDecoracion(esSeleccionada),
+                    child: Icon(
+                      cat['icono'] as IconData,
+                      color: esSeleccionada
+                          ? AppTheme.primaryYellow
+                          : AppTheme.textColor.withOpacity(0.4),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    cat['nombre'] as String,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: esSeleccionada
+                          ? FontWeight.bold
+                          : FontWeight.w500,
+                      color: esSeleccionada
+                          ? AppTheme.primaryYellow
+                          : AppTheme.textColor.withOpacity(0.4),
+                    ),
                   ),
                 ],
               ),
             ),
-            
-            // Contenido principal (vacío por ahora)
-            Expanded(
-              child: Container(
-                color: AppTheme.backgroundColor,
-                child: const Center(
-                  child: Text(
-                    'Contenido principal aquí',
-                    style: TextStyle(color: Colors.grey),
-                  ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _construirSeccionPrincipal() {
+    return FutureBuilder<List<Discoteca>>(
+      future: _futuroDiscotecas,
+      builder: (context, captura) {
+        if (captura.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(40),
+              child: CircularProgressIndicator(color: AppTheme.primaryPink),
+            ),
+          );
+        }
+
+        if (captura.hasError || !captura.hasData || captura.data!.isEmpty) {
+          return const Center(child: Text('No se encontraron locales activos'));
+        }
+
+        final datosRecibidos = captura.data!;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingMd),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _tarjetaDestacada(datosRecibidos.first),
+              const SizedBox(height: AppTheme.spacingXl),
+              Text('CERCA DE TI', style: AppTheme.etiquetaSeccion),
+              const SizedBox(height: AppTheme.spacingMd),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: datosRecibidos.length > 1
+                    ? datosRecibidos.length - 1
+                    : 0,
+                itemBuilder: (context, i) =>
+                    _itemListaNormal(datosRecibidos[i + 1]),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _tarjetaDestacada(Discoteca d) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(24),
+      decoration: AppTheme.cardDestacadoDecoracion,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.whatshot,
+                color: AppTheme.primaryYellow,
+                size: 18,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'DESTACADO',
+                style: AppTheme.etiquetaSeccion.copyWith(
+                  color: AppTheme.primaryYellow,
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(d.nombre, style: AppTheme.tituloPagina.copyWith(fontSize: 24)),
+          Text(
+            'Zona ${d.zonaBarrio ?? "Central"} • ${d.tipo ?? "Bar"}',
+            style: AppTheme.subtituloPagina.copyWith(color: Colors.white70),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              const Icon(Icons.star, color: AppTheme.primaryYellow, size: 18),
+              const Text(' 4.8', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(width: 16),
+              Icon(
+                Icons.location_on,
+                color: AppTheme.primaryPink.withOpacity(0.8),
+                size: 18,
+              ),
+              const Text(' 350m', style: TextStyle(color: Colors.white70)),
+            ],
+          ),
+        ],
       ),
-      
-      // Bottom Navigation Bar
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
+    );
+  }
+
+  Widget _itemListaNormal(Discoteca d) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: AppTheme.cardDecoracion,
+      child: Row(
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(AppTheme.radiusMd),
             ),
-          ],
-        ),
-        child: SafeArea(
-          child: Container(
-            height: 70,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            child: const Icon(
+              Icons.music_note_rounded,
+              color: AppTheme.primaryPink,
+              size: 30,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildNavItem(Icons.notifications_outlined, 0),
-                _buildNavItem(Icons.explore_outlined, 1),
-                _buildCenterNavItem(),
-                _buildNavItem(Icons.calendar_month_outlined, 3),
-                _buildNavItem(Icons.person_outline, 4),
+                Text(
+                  d.nombre,
+                  style: AppTheme.textoCampo.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
+                ),
+                Text(d.tipo ?? 'Discoteca', style: AppTheme.textoPequeno),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.star,
+                      color: AppTheme.primaryYellow,
+                      size: 16,
+                    ),
+                    const Text(' 4.5', style: TextStyle(fontSize: 13)),
+                    const SizedBox(width: 12),
+                    Icon(
+                      Icons.location_on,
+                      color: AppTheme.primaryPink.withOpacity(0.6),
+                      size: 16,
+                    ),
+                    Text(
+                      ' 1.2km',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.textColor.withOpacity(0.5),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _construirNavInferior() {
+    return Container(
+      decoration: AppTheme.navBarDecoracion,
+      child: SafeArea(
+        child: Container(
+          height: 80,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _itemNav(Icons.notifications_none_rounded, 0),
+              _itemNav(Icons.explore_outlined, 1),
+              _itemNavCentral(),
+              _itemNav(Icons.calendar_month_outlined, 3),
+              _itemNav(Icons.person_outline_rounded, 4),
+            ],
           ),
         ),
       ),
     );
   }
-  
-  Widget _buildNavItem(IconData icon, int index) {
-    final isSelected = _selectedIndex == index;
-    
+
+  Widget _itemNav(IconData icono, int indice) {
+    final seleccionado = _indiceSeleccionado == indice;
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-        if (index == 4) { //4 es el indice del icono de perfil en el navbar
-          Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) => const ProfilePage(),
-              ),
-            );
-        }
-        // TODO: Navegar a la página correspondiente
-      },
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? AppTheme.primaryYellow : Colors.grey[600],
-              size: 24,
+      onTap: () => setState(() => _indiceSeleccionado = indice),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icono,
+            color: seleccionado
+                ? AppTheme.primaryYellow
+                : AppTheme.textColor.withOpacity(0.3),
+            size: 28,
+          ),
+          const SizedBox(height: 5),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: 4,
+            width: seleccionado ? 4 : 0,
+            decoration: const BoxDecoration(
+              color: AppTheme.primaryYellow,
+              shape: BoxShape.circle,
             ),
-            if (isSelected)
-              Container(
-                margin: const EdgeInsets.only(top: 4),
-                height: 3,
-                width: 3,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryYellow,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
-  
-  Widget _buildCenterNavItem() {
+
+  Widget _itemNavCentral() {
     return GestureDetector(
-      onTap: () {
-        // TODO: Acción para agregar
-      },
+      onTap: () => setState(() => _indiceSeleccionado = 2),
       child: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          gradient: AppTheme.buttonGradient,
-          borderRadius: BorderRadius.circular(28),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.primaryYellow.withOpacity(0.3),
-              blurRadius: 15,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
+        width: 60,
+        height: 60,
+        decoration: AppTheme.botonPrimarioCircular,
         child: const Icon(
           Icons.home_filled,
           color: AppTheme.backgroundColor,
-          size: 28,
+          size: 32,
         ),
       ),
     );
