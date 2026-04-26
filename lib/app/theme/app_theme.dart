@@ -255,6 +255,44 @@ class AppTheme {
     );
   }
 
+  // DECORACION BARRA BUSQUEDA
+  static BoxDecoration barraBusquedaDecoracion = BoxDecoration(
+    color: Colors.black.withOpacity(0.4),
+    borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+    border: Border.all(color: AppTheme.textColor.withOpacity(0.08)),
+  );
+
+  // DECORACION BOTTOM NAVBAR
+  static BoxDecoration navBarDecoracion = BoxDecoration(
+    color: const Color(0xFF131313),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.4),
+        blurRadius: 20,
+        offset: const Offset(0, -5),
+      ),
+    ],
+  );
+
+  // DECORACION BOTONES CIRCULARES
+  static BoxDecoration botonCircularDecoracion = BoxDecoration(
+    color: AppTheme.textColor.withOpacity(0.07),
+    borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+    border: Border.all(color: AppTheme.textColor.withOpacity(0.08)),
+  );
+
+  // ESTILOS DE TEXTO HOME
+  static const TextStyle textoUbicacion = TextStyle(
+    color: textColor,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+  );
+
+  static TextStyle textoSearchHint = TextStyle(
+    color: textColor.withOpacity(0.3),
+    fontSize: 14,
+  );
+
   // THEME DATA
   static ThemeData get darkTheme {
     return ThemeData(
