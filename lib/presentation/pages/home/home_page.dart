@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_theme.dart';
 import 'menus/home_discotecas_page.dart';
+import '../profile/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +18,7 @@ class _HomePageState extends State<HomePage> {
     const Center(child: Text('Explorar')),
     const HomeDiscotecasPage(),
     const Center(child: Text('Calendario')),
-    const Center(child: Text('Perfil')),
+    const ProfilePage(),
   ];
 
   @override
