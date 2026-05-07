@@ -32,7 +32,7 @@ class _ExplorarPageState extends State<ExplorarPage> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+          padding: const EdgeInsets.fromLTRB(20, 60, 20, 12),
           child: Row(
             children: [
               Text('Explorar', style: AppTheme.tituloPagina),
@@ -105,7 +105,7 @@ class _ExplorarPageState extends State<ExplorarPage> {
               border: Border.all(color: Colors.white, width: 2),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.primaryPink.withOpacity(0.4),
+                  color: AppTheme.primaryPink.withValues(alpha:0.4),
                   blurRadius: 8,
                 ),
               ],
@@ -132,7 +132,7 @@ class _ExplorarPageState extends State<ExplorarPage> {
           );
         }
         return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
           itemCount: captura.data!.length,
           itemBuilder: (context, i) => _itemDiscoteca(captura.data![i]),
         );
@@ -153,7 +153,7 @@ class _ExplorarPageState extends State<ExplorarPage> {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: AppTheme.primaryPink.withOpacity(0.15),
+                color: AppTheme.primaryPink.withValues(alpha:0.15),
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
               ),
               child: d.logoUrl != null

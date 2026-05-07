@@ -61,7 +61,7 @@ class _DiscotecaDetailPageState extends State<DiscotecaDetailPage> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  colors: [Colors.transparent, Colors.black.withValues(alpha:0.7)],
                 ),
               ),
             ),
@@ -118,7 +118,7 @@ class _DiscotecaDetailPageState extends State<DiscotecaDetailPage> {
                 ),
                 if (d.totalResenas != null)
                   Text(' (${d.totalResenas})',
-                      style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12)),
+                      style: TextStyle(color: Colors.white.withValues(alpha:0.5), fontSize: 12)),
               ],
             ],
           ),
@@ -199,9 +199,9 @@ class _DiscotecaDetailPageState extends State<DiscotecaDetailPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha:0.15),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha:0.3)),
       ),
       child: Text(label,
           style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w600)),
@@ -213,7 +213,7 @@ class _DiscotecaDetailPageState extends State<DiscotecaDetailPage> {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
+          color: Colors.white.withValues(alpha:0.05),
           borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           border: Border.all(color: Colors.white12),
         ),
@@ -346,7 +346,7 @@ class _DiscotecaDetailPageState extends State<DiscotecaDetailPage> {
                       'Bs ${evento.precioEntrada!.toStringAsFixed(0)}',
                       style: TextStyle(
                           fontSize: 13,
-                          color: AppTheme.primaryPink.withOpacity(0.9),
+                          color: AppTheme.primaryPink.withValues(alpha:0.9),
                           fontWeight: FontWeight.w600),
                     ),
                   ],

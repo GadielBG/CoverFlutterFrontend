@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_theme.dart';
 import 'menus/home_discotecas_page.dart';
@@ -26,27 +27,38 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: SafeArea(child: _paginas[_indiceSeleccionado]),
+      extendBody: true,
+      body: _paginas[_indiceSeleccionado],
       bottomNavigationBar: _construirNavInferior(),
     );
   }
 
   Widget _construirNavInferior() {
-    return Container(
-      decoration: AppTheme.navBarDecoracion,
-      child: SafeArea(
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
         child: Container(
-          height: 80,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _itemNav(Icons.notifications_none_rounded, 0),
-              _itemNav(Icons.explore_outlined, 1),
-              _itemNavCentral(),
-              _itemNav(Icons.calendar_month_outlined, 3),
-              _itemNav(Icons.person_outline_rounded, 4),
-            ],
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.55),
+            border: Border(
+              top: BorderSide(
+                  color: Colors.white.withValues(alpha: 0.07), width: 1),
+            ),
+          ),
+          child: SafeArea(
+            child: SizedBox(
+              height: 68,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _itemNav(Icons.notifications_none_rounded, 0),
+                  _itemNav(Icons.explore_outlined, 1),
+                  _itemNavCentral(),
+                  _itemNav(Icons.calendar_month_outlined, 3),
+                  _itemNav(Icons.person_outline_rounded, 4),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -57,42 +69,56 @@ class _HomePageState extends State<HomePage> {
     final seleccionado = _indiceSeleccionado == indice;
     return GestureDetector(
       onTap: () => setState(() => _indiceSeleccionado = indice),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icono,
-            color: seleccionado
-                ? AppTheme.primaryYellow
-                : AppTheme.textColor.withOpacity(0.3),
-            size: 28,
-          ),
-          const SizedBox(height: 5),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: 4,
-            width: seleccionado ? 4 : 0,
-            decoration: const BoxDecoration(
-              color: AppTheme.primaryYellow,
-              shape: BoxShape.circle,
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        width: 56,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icono,
+              color: seleccionado
+                  ? AppTheme.primaryYellow
+                  : Colors.white.withValues(alpha: 0.28),
+              size: 26,
             ),
-          ),
-        ],
+            const SizedBox(height: 5),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 3,
+              width: seleccionado ? 20 : 0,
+              decoration: BoxDecoration(
+                gradient: seleccionado ? AppTheme.buttonGradient : null,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _itemNavCentral() {
+    final seleccionado = _indiceSeleccionado == 2;
     return GestureDetector(
       onTap: () => setState(() => _indiceSeleccionado = 2),
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: AppTheme.botonPrimarioCircular,
-        child: const Icon(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 56,
+        height: 56,
+        decoration: seleccionado
+            ? AppTheme.botonPrimarioCircular
+            : BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.08),
+                border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.12)),
+              ),
+        child: Icon(
           Icons.home_filled,
-          color: AppTheme.backgroundColor,
-          size: 32,
+          color: seleccionado ? Colors.black : Colors.white.withValues(alpha: 0.4),
+          size: 28,
         ),
       ),
     );

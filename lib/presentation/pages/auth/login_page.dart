@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     const SizedBox(height: AppTheme.spacingXxl),
-                    const Text('Iniciar sesión', style: AppTheme.tituloPagina),
+                    Text('Iniciar sesión', style: AppTheme.tituloPagina),
                     const SizedBox(height: AppTheme.spacingXs),
 
                     Text(
@@ -165,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                                         color: AppTheme.textColor,
                                       ),
                                     )
-                                  : const Text(
+                                  : Text(
                                       'Iniciar sesión',
                                       style: AppTheme.textoBoton,
                                     ),
@@ -177,12 +177,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     const SizedBox(height: AppTheme.spacingXl),
 
-                    Center(
-                      child: Text(
-                        'Ingresa también con',
-                        style: AppTheme.textoPequeno,
-                      ),
-                    ),
+                    Center(child: Text('Ingresa también con', style: AppTheme.textoPequeno)),
                     const SizedBox(height: AppTheme.spacingMd),
 
                     Row(
@@ -221,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: ShaderMask(
                               shaderCallback: (bounds) =>
                                   AppTheme.buttonGradient.createShader(bounds),
-                              child: const Text(
+                              child: Text(
                                 'Regístrate aquí',
                                 style: AppTheme.textoLink,
                               ),
@@ -246,9 +241,9 @@ class _LoginPageState extends State<LoginPage> {
       width: 55,
       height: 55,
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
+        color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: AppTheme.textColor.withOpacity(0.08)),
+        border: Border.all(color: AppTheme.textColor.withValues(alpha: 0.08)),
       ),
       child: IconButton(
         icon: Icon(icono, color: color, size: 24),

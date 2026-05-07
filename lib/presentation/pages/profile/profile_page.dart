@@ -16,7 +16,7 @@ class ProfilePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).padding.top + 10),
                 _construirCabecera(context),
                 const SizedBox(height: 30),
                 _construirAvatar(usuario.nombreCompleto),
@@ -68,19 +68,19 @@ class ProfilePage extends StatelessWidget {
                 _construirOpcionMenu(
                   icono: Icons.credit_card,
                   titulo: 'Métodos de Pago',
-                  colorIcono: Colors.blueAccent,
+                  colorIcono: AppTheme.primaryPink,
                   alTocar: () {},
                 ),
                 _construirOpcionMenu(
                   icono: Icons.favorite,
                   titulo: 'Locales Favoritos',
-                  colorIcono: Colors.pinkAccent,
+                  colorIcono: AppTheme.primaryPink,
                   alTocar: () {},
                 ),
                 _construirOpcionMenu(
                   icono: Icons.confirmation_number,
                   titulo: 'Mis Cupones',
-                  colorIcono: Colors.yellowAccent,
+                  colorIcono: AppTheme.primaryPink,
                   alTocar: () {},
                 ),
                 _construirOpcionMenu(
@@ -90,7 +90,7 @@ class ProfilePage extends StatelessWidget {
                   esSalida: true,
                   alTocar: () => _mostrarConfirmacionSalida(context),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 120),
               ],
             ),
           );
@@ -109,7 +109,7 @@ class ProfilePage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('Mi Perfil', style: AppTheme.tituloPagina),
+        Text('Mi Perfil', style: AppTheme.tituloPagina),
         Container(
           decoration: AppTheme.botonCircularDecoracion,
           child: IconButton(
@@ -192,7 +192,7 @@ class ProfilePage extends StatelessWidget {
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: esRating ? AppTheme.primaryPink : AppTheme.primaryYellow,
+            color: esRating ? AppTheme.primaryPink : Colors.white,
           ),
         ),
         const SizedBox(height: 4),
@@ -228,7 +228,7 @@ class ProfilePage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha:0.05),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -238,7 +238,7 @@ class ProfilePage extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryYellow,
+                    color: Colors.white,
                   ),
                 ),
                 Text(
@@ -246,7 +246,7 @@ class ProfilePage extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey,
+                    color: Colors.white54,
                   ),
                 ),
               ],
@@ -272,7 +272,7 @@ class ProfilePage extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: colorEstado.withOpacity(0.1),
+                        color: colorEstado.withValues(alpha:0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -313,7 +313,7 @@ class ProfilePage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
         decoration: BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: Colors.white.withOpacity(0.05)),
+            bottom: BorderSide(color: Colors.white.withValues(alpha:0.05)),
           ),
         ),
         child: Row(
@@ -321,7 +321,7 @@ class ProfilePage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: colorIcono.withOpacity(0.1),
+                color: colorIcono.withValues(alpha:0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icono, color: colorIcono, size: 20),

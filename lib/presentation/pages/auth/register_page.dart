@@ -172,7 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             AppTheme.buttonGradient.createShader(
                               Rect.fromLTWH(0, 0, bounds.width, bounds.height),
                             ),
-                        child: const Text('COVER', style: AppTheme.estiloLogo),
+                        child: Text('COVER', style: AppTheme.estiloLogo),
                       ),
                     ],
                   ),
@@ -189,7 +189,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: AppTheme.spacingMd),
-                          const Text(
+                          Text(
                             'Crear cuenta',
                             style: AppTheme.tituloPagina,
                           ),
@@ -409,7 +409,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                               color: AppTheme.textColor,
                                             ),
                                           )
-                                        : const Text(
+                                        : Text(
                                             'Crear cuenta',
                                             style: AppTheme.textoBoton,
                                           ),
@@ -434,7 +434,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     shaderCallback: (bounds) => AppTheme
                                         .buttonGradient
                                         .createShader(bounds),
-                                    child: const Text(
+                                    child: Text(
                                       'Iniciar sesión',
                                       style: AppTheme.textoLink,
                                     ),
