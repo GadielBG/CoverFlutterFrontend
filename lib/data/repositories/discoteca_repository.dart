@@ -1,6 +1,7 @@
 import '../../core/network/api_client.dart';
 import '../../core/constants/api_constants.dart';
 import '../models/discoteca_model.dart';
+import '../models/evento_model.dart';
 
 class DiscotecaRepository {
   final ApiClient apiClient;
@@ -22,6 +23,22 @@ class DiscotecaRepository {
       }
     } catch (e) {
       throw Exception('Error de conexión al listar discotecas: $e');
+    }
+  }
+
+  Future<List<Evento>> obtenerEventosPorDiscoteca(int discotecaId) async {
+    try {
+      final respuesta = await apiClient.dio.get(
+        '/eventos',
+        queryParameters: {'discotecaId': discotecaId},
+      );
+      if (respuesta.statusCode == 200) {
+        final List<dynamic> listaJson = respuesta.data['data'];
+        return listaJson.map((item) => Evento.desdeJson(item)).toList();
+      }
+      throw Exception('Error al obtener eventos');
+    } catch (e) {
+      throw Exception('Error de conexión al listar eventos: $e');
     }
   }
 }

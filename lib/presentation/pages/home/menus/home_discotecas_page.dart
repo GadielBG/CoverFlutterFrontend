@@ -6,6 +6,7 @@ import '../../../../data/models/discoteca_model.dart';
 import '../../../../data/repositories/discoteca_repository.dart';
 import '../../../../injection_container.dart';
 import '../../profile/profile_page.dart';
+import '../discoteca_detail_page.dart';
 
 class HomeDiscotecasPage extends StatefulWidget {
   const HomeDiscotecasPage({super.key});
@@ -250,7 +251,10 @@ class _HomeDiscotecasPageState extends State<HomeDiscotecasPage> {
   }
 
   Widget _tarjetaDestacada(Discoteca d) {
-    return Container(
+    return GestureDetector(
+      onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => DiscotecaDetailPage(discoteca: d))),
+      child: Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: AppTheme.cardDestacadoDecoracion,
@@ -295,11 +299,15 @@ class _HomeDiscotecasPageState extends State<HomeDiscotecasPage> {
           ),
         ],
       ),
+    ),
     );
   }
 
   Widget _itemListaNormal(Discoteca d) {
-    return Container(
+    return GestureDetector(
+      onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (_) => DiscotecaDetailPage(discoteca: d))),
+      child: Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
       decoration: AppTheme.cardDecoracion,
@@ -360,6 +368,7 @@ class _HomeDiscotecasPageState extends State<HomeDiscotecasPage> {
           ),
         ],
       ),
+    ),
     );
   }
 }

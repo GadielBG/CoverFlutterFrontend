@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_theme.dart';
 import 'menus/home_discotecas_page.dart';
+import 'menus/explorar_page.dart';
 import '../profile/profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +16,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _paginas = [
     const Center(child: Text('Notificaciones')),
-    const Center(child: Text('Explorar')),
+    const ExplorarPage(),
     const HomeDiscotecasPage(),
     const Center(child: Text('Calendario')),
     const ProfilePage(),
