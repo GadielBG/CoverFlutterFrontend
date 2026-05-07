@@ -20,6 +20,24 @@ class _HomeDiscotecasPageState extends State<HomeDiscotecasPage> {
   String _categoriaActual = 'Todos';
   late Future<List<Discoteca>> _futuroDiscotecas;
 
+  static const _mapaTipos = {
+    'Bares': ['bar', 'bar de copas', 'cocktail bar'],
+    'Discos': ['discoteca', 'disco', 'club', 'club nocturno'],
+    'Pubs': ['pub'],
+    'Karaoke': ['karaoke'],
+    'Lounge': ['lounge', 'lounge bar'],
+  };
+
+  List<Discoteca> _filtrar(List<Discoteca> todos) {
+    if (_categoriaActual == 'Todos') return todos;
+    final tiposValidos = _mapaTipos[_categoriaActual] ?? [];
+    return todos
+        .where((d) =>
+            d.tipo != null &&
+            tiposValidos.contains(d.tipo!.toLowerCase().trim()))
+        .toList();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -237,7 +255,10 @@ class _HomeDiscotecasPageState extends State<HomeDiscotecasPage> {
           );
         }
 
-        final datos = captura.data!;
+        final datos = _filtrar(captura.data!);
+
+        if (datos.isEmpty) return _estadoVacioFiltro();
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -245,33 +266,67 @@ class _HomeDiscotecasPageState extends State<HomeDiscotecasPage> {
             children: [
               const SizedBox(height: 28),
               _tarjetaDestacada(datos.first),
-              const SizedBox(height: 28),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('CERCA DE TI', style: AppTheme.etiquetaSeccion),
-                  Text(
-                    'Ver todos',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: AppTheme.primaryYellow,
-                      fontWeight: FontWeight.w600,
+              if (datos.length > 1) ...[
+                const SizedBox(height: 28),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('CERCA DE TI', style: AppTheme.etiquetaSeccion),
+                    Text(
+                      'Ver todos',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppTheme.primaryYellow,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: datos.length > 1 ? datos.length - 1 : 0,
-                itemBuilder: (context, i) =>
-                    _itemListaNormal(datos[i + 1]),
-              ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: datos.length - 1,
+                  itemBuilder: (context, i) => _itemListaNormal(datos[i + 1]),
+                ),
+              ],
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _estadoVacioFiltro() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+      child: Column(
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.04),
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+            ),
+            child: Icon(Icons.search_off_rounded,
+                color: Colors.white.withValues(alpha: 0.25), size: 32),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Sin locales en esta categoría',
+            style: AppTheme.textoCampo
+                .copyWith(color: Colors.white.withValues(alpha: 0.5)),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Pronto habrá más locales disponibles',
+            style: AppTheme.textoPequeno,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 

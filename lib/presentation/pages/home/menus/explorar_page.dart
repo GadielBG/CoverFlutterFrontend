@@ -53,25 +53,64 @@ class _ExplorarPageState extends State<ExplorarPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-        border: Border.all(color: Colors.white12),
+        border: Border.all(
+          color: AppTheme.primaryPink.withValues(alpha: 0.25),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryPink.withValues(alpha: 0.12),
+            blurRadius: 24,
+            spreadRadius: 4,
+          ),
+        ],
       ),
       clipBehavior: Clip.hardEdge,
       child: FutureBuilder<List<Discoteca>>(
         future: _futuroDiscotecas,
         builder: (context, captura) {
           final marcadores = _construirMarcadores(captura.data ?? []);
-          return FlutterMap(
-            mapController: _mapController,
-            options: const MapOptions(
-              initialCenter: _centroPaz,
-              initialZoom: 13,
-            ),
+          return Stack(
             children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.cover.app',
+              FlutterMap(
+                mapController: _mapController,
+                options: const MapOptions(
+                  initialCenter: _centroPaz,
+                  initialZoom: 13,
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                    subdomains: const ['a', 'b', 'c', 'd'],
+                    userAgentPackageName: 'com.cover.app',
+                  ),
+                  if (marcadores.isNotEmpty) MarkerLayer(markers: marcadores),
+                  SimpleAttributionWidget(
+                    source: const Text('© CARTO, © OpenStreetMap',
+                        style: TextStyle(fontSize: 9)),
+                    backgroundColor: Colors.black54,
+                  ),
+                ],
               ),
-              if (marcadores.isNotEmpty) MarkerLayer(markers: marcadores),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        AppTheme.backgroundColor.withValues(alpha: 0.85),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           );
         },
@@ -94,23 +133,27 @@ class _ExplorarPageState extends State<ExplorarPage> {
       final pos = posiciones[i % posiciones.length];
       return Marker(
         point: pos,
-        width: 40,
-        height: 40,
+        width: 44,
+        height: 44,
         child: GestureDetector(
           onTap: () => _abrirDetalle(discotecas[i]),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.primaryPink,
+              gradient: AppTheme.buttonGradient,
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 2),
+              border: Border.all(
+                color: Colors.black.withValues(alpha: 0.25),
+                width: 1.5,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.primaryPink.withValues(alpha:0.4),
-                  blurRadius: 8,
+                  color: AppTheme.primaryYellow.withValues(alpha: 0.45),
+                  blurRadius: 14,
+                  spreadRadius: 1,
                 ),
               ],
             ),
-            child: const Icon(Icons.music_note, color: Colors.white, size: 18),
+            child: const Icon(Icons.nightlife, color: Colors.black, size: 20),
           ),
         ),
       );
